@@ -65,6 +65,7 @@ textarea{width:100%;height:220px;margin-top:12px;font:inherit;background:var(--c
 .sc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.sc div{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 6px;text-align:center}.sc b{display:block;font-size:1.3rem}.sc small{color:var(--mu)}
 .tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:center}th:first-child,td:first-child{text-align:left}
 td.ok{color:#2e9e5b;font-weight:700}td.bad{color:#d64545;font-weight:700}
+#pl button{padding:12px 18px;font-weight:700;font-size:1rem}
 </style></head>
 <body><main>
 <h1>Mon Ballon d’Or <span>2026</span></h1>
@@ -87,9 +88,7 @@ td.ok{color:#2e9e5b;font-weight:700}td.bad{color:#d64545;font-weight:700}
 <div class="bar" style="margin-top:6px"><button class="p" id="add">Ajouter</button></div><p id="cmsg" style="color:var(--ac);min-height:1.2em"></p></details>
 </div>
 </main>
-<div class="ov" id="ps" hidden><div><h2>🏆 Connexion</h2><p class="sub">Touche ton pseudo ou crée un compte.</p><div id="pl" class="fl" style="justify-content:center"></div>
-<input id="pi" maxlength="20" placeholder="Pseudo" autocomplete="off"><input id="pw" type="password" maxlength="40" placeholder="Mot de passe" autocomplete="off">
-<p id="pe" style="color:#d64545;min-height:1.2em;margin:0 0 8px"></p><button class="p" id="pok">Se connecter</button> <button id="pno" hidden>Annuler</button></div></div>
+<div class="ov" id="ps" hidden><div><h2>🏆 Ballon d’Or 2026</h2><p class="sub">Touche ton pseudo pour retrouver ton classement, ou crée-en un nouveau.</p><div id="pl" class="fl" style="justify-content:center"></div><input id="pi" maxlength="20" placeholder="Nouveau pseudo" autocomplete="off"><button class="p" id="pok">Créer ce pseudo</button> <button id="pno" hidden>Annuler</button></div></div>
 <div id="md" hidden><div class="sheet" id="sh"></div></div>
 <script>
 const FR="🇫🇷",ES="🇪🇸",PT="🇵🇹",EN="🏴󠁧󠁢󠁥󠁮󠁧󠁿",BR="🇧🇷",AR="🇦🇷";
@@ -130,7 +129,7 @@ const C={"Real Madrid":["#3b4a8a","#c9a84c"],"FC Barcelone":["#a50044","#004d98"
 const $=s=>document.querySelector(s),L=$("#list"),K="bdo26b";
 let slots=Array(30).fill(null),sel=null;
 try{const x=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(x)&&x.length===30&&x.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30))&&new Set(x.filter(v=>v!==null)).size===x.filter(v=>v!==null).length)slots=x}catch(e){}
-const save=()=>{if(me){profs[key(me)]={p:me,r:slots.slice(),h:(profs[key(me)]||{}).h};saveP()}};
+const save=()=>{if(me){profs[key(me)]={p:me,r:slots.slice()};saveP()}};
 const ini=n=>{const w=n.split(" ");return(w.length>1?w[0][0]+w[w.length-1][0]:n.slice(0,2)).toUpperCase()};
 const age=b=>{const d=new Date(b),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))a--;return a};
 const col=c=>{const [a,b]=C[c]||["#555","#222"];return `--g:${a};--g2:${b}`};
@@ -189,27 +188,22 @@ const PK="bdo26p",FK="bdo26u";
 let me="",profs={},cur="";
 function key(t){return String(t).trim().toLowerCase()}
 try{me=localStorage.getItem(PK)||"";const f=JSON.parse(localStorage.getItem(FK)||"{}");
- if(f&&typeof f==="object")for(const k in f){const x=f[k];if(x&&typeof x.p==="string"&&check(x.r))profs[k]={p:x.p,r:x.r,h:typeof x.h==="string"?x.h:undefined}}}catch(e){}
-if(me&&!(profs[key(me)]&&profs[key(me)].h))me="";
-if(me)slots=profs[key(me)].r.slice();
+ if(f&&typeof f==="object")for(const k in f){const x=f[k];if(x&&typeof x.p==="string"&&check(x.r))profs[k]={p:x.p,r:x.r}}}catch(e){}
+if(me){if(profs[key(me)])slots=profs[key(me)].r.slice();else{profs[key(me)]={p:me,r:slots.slice()}}}
 function check(r){if(!Array.isArray(r)||r.length!==30||!r.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30)))return false;const f=r.filter(v=>v!==null);return new Set(f).size===f.length}
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const saveP=()=>{try{localStorage.setItem(FK,JSON.stringify(profs))}catch(e){}};
-function who(){$("#who").innerHTML=me?`👤 <b>${esc(me)}</b><a id="chg">se déconnecter</a>`:""}
-function askName(first){$("#pl").innerHTML=Object.values(profs).map(x=>`<button data-u="${esc(x.p)}">${esc(x.p)}</button>`).join("");$("#pi").value="";$("#pw").value="";$("#pe").textContent="";lab();$("#pno").hidden=first;$("#ps").hidden=false;$("#pi").focus()}
-function lab(){const p=profs[key($("#pi").value)];$("#pok").textContent=p?(p.h?"Se connecter":"Définir le mot de passe"):"Créer mon compte"}
-async function hash(t){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("bdo26|"+t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){let h=5381;for(const c of "bdo26|"+t)h=(h*33^c.charCodeAt(0))>>>0;return "d"+h}}
-async function login(){const v=$("#pi").value.trim().slice(0,20),pw=$("#pw").value,er=m=>{$("#pe").textContent=m};
- if(!v)return er("Entre un pseudo.");if(pw.length<3)return er("Mot de passe : 3 caractères minimum.");
- const k=key(v),h=await hash(pw),p=profs[k];if(p&&p.h&&p.h!==h)return er("Mot de passe incorrect.");
- if(p)slots=p.r.slice();else if(Object.keys(profs).length)slots=Array(30).fill(null);
- me=p?p.p:v;profs[k]={p:me,r:slots.slice(),h};saveP();try{localStorage.setItem(PK,me)}catch(e){}
+function who(){$("#who").innerHTML=me?`👤 <b>${esc(me)}</b><a id="chg">changer de joueur</a>`:""}
+function askName(first){$("#pl").innerHTML=Object.values(profs).map(x=>`<button data-u="${esc(x.p)}">${esc(x.p)}</button>`).join("");$("#pi").value="";$("#pno").hidden=first;$("#ps").hidden=false;$("#pi").focus()}
+function choose(v){v=v.trim().slice(0,20);if(!v)return;const k=key(v);
+ if(profs[k])slots=profs[k].r.slice();else if(Object.keys(profs).length)slots=Array(30).fill(null);
+ me=profs[k]?profs[k].p:v;profs[k]={p:me,r:slots.slice()};saveP();try{localStorage.setItem(PK,me)}catch(e){}
  sel=null;$("#cbox").hidden=true;$("#ps").hidden=true;who();render();showF()}
-$("#pok").onclick=login;
-$("#pl").addEventListener("click",e=>{const b=e.target.closest("button");if(b){$("#pi").value=b.dataset.u;lab();$("#pw").focus()}});
-$("#pi").addEventListener("input",lab);$("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+$("#pok").onclick=()=>choose($("#pi").value);
+$("#pl").addEventListener("click",e=>{const b=e.target.closest("button");if(b)choose(b.dataset.u)});
+$("#pi").addEventListener("keydown",e=>{if(e.key==="Enter")$("#pok").click()});
 $("#pno").onclick=()=>$("#ps").hidden=true;
-$("#who").addEventListener("click",e=>{if(e.target.id!=="chg")return;me="";try{localStorage.removeItem(PK)}catch(x){}slots=Array(30).fill(null);sel=null;who();render();showF();askName(true)});
+$("#who").addEventListener("click",e=>{if(e.target.id==="chg")askName(false)});
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
  $("#tab-mine").hidden=b.dataset.t!=="mine";$("#tab-cmp").hidden=b.dataset.t!=="cmp";if(b.dataset.t==="cmp")showF()});
 const enc=()=>"BDO26:"+btoa(unescape(encodeURIComponent(JSON.stringify([me,slots]))));
@@ -218,7 +212,7 @@ function dec(t){try{t=t.replace(/\s/g,"").replace(/^BDO26:/,"");const [p,r]=JSON
 $("#code").onclick=()=>{$("#ct").value=enc();$("#cbox").hidden=false;$("#ct").select()};
 $("#cc").onclick=async()=>{try{await navigator.clipboard.writeText($("#ct").value);$("#msg").textContent="Code copié !"}catch(e){$("#ct").select();$("#msg").textContent="Sélectionné : copie-le à la main."}};
 $("#add").onclick=()=>{const d=dec($("#imp").value);if(!d){$("#cmsg").textContent="Code invalide, vérifie que tu l’as collé en entier.";return}
- profs[key(d.p)]={p:d.p,r:d.r,h:(profs[key(d.p)]||{}).h};saveP();cur=key(d.p);$("#imp").value="";$("#cmsg").textContent=`Classement de ${d.p} ajouté.`;showF()};
+ profs[key(d.p)]={p:d.p,r:d.r};saveP();cur=key(d.p);$("#imp").value="";$("#cmsg").textContent=`Classement de ${d.p} ajouté.`;showF()};
 const others=()=>Object.values(profs).filter(x=>key(x.p)!==key(me));
 function showF(){const o=others();if(cur&&!o.some(x=>key(x.p)===cur))cur="";
  $("#fl").innerHTML=o.map(f=>`<button class="${key(f.p)===cur?"on":""}" data-f="${esc(key(f.p))}">${esc(f.p)}</button>`).join("");
