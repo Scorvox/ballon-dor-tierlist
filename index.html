@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mon Ballon d’Or 2026</title>
+<style>
+:root{--bg:#f4f1e8;--card:#fff;--tx:#1b1b1f;--mu:#6b6b73;--bd:#e3e0d6;--ac:#b8860b;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0f12;--card:#1b1b20;--tx:#f2f0ea;--mu:#9a9aa3;--bd:#2d2d33;--ac:#e0b341;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f0f12;--card:#1b1b20;--tx:#f2f0ea;--mu:#9a9aa3;--bd:#2d2d33;--ac:#e0b341;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.35}
+main{max-width:640px;margin:0 auto;padding:20px 14px 60px}
+h1{font-size:1.7rem;margin:0 0 4px}h1 span{color:var(--ac)}
+.sub{color:var(--mu);margin:0 0 14px;font-size:.92rem}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:8px 12px}
+button.p{background:var(--ac);border-color:var(--ac);color:#111;font-weight:600}
+#msg{color:var(--ac);font-size:.9rem;min-height:1.2em;margin:0 0 8px}
+
+#pool{position:sticky;top:0;z-index:20;background:var(--bg);padding:6px 0 10px;margin-bottom:8px;border-bottom:1px solid var(--bd)}
+#pool.hov{outline:2px dashed var(--ac)}
+.ph2{display:flex;justify-content:space-between;font-weight:700;margin-bottom:6px}
+.ph2 span{color:var(--ac);font-weight:600;font-size:.88rem;text-align:right}
+#chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:34vh;overflow-y:auto;padding:2px}
+.chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:6px 8px;cursor:pointer;user-select:none;-webkit-user-select:none;min-width:0}
+.chip.sel{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+.chip b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.85rem}
+.chip .inf,.rm{border:0;background:none;color:var(--mu);padding:2px 4px;font-size:1rem}
+.face{flex:none;position:relative;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.15rem;text-shadow:0 1px 3px rgba(0,0,0,.5);background:linear-gradient(145deg,var(--g),var(--g2))}
+.face.sm{width:36px;height:36px;border-radius:10px;font-size:.8rem}
+.face i{position:absolute;right:-6px;bottom:-6px;font-style:normal;font-size:1rem;text-shadow:none}
+.face.sm i{font-size:.8rem;right:-4px;bottom:-4px}
+#list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.slot{display:flex;align-items:center;gap:10px;min-height:76px;border:2px dashed var(--bd);border-radius:16px;padding:8px 10px;position:relative}
+.slot.hov{border-color:var(--ac);background:rgba(184,134,11,.12)}
+.slot .n{flex:none;width:2.4rem;text-align:center;font-size:1.2rem;font-weight:800;color:var(--mu)}
+.slot .e{color:var(--mu);font-size:.9rem}
+.slot.f{border-style:solid;background:var(--card);cursor:pointer;overflow:hidden}
+.slot.f::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--g)}
+.slot.f .n{color:var(--tx)}
+.slot.r1{border-color:#d4a017}.slot.r2{border-color:#9aa0a6}.slot.r3{border-color:#b4713d}
+.nm{flex:1;min-width:0}.nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nm small{color:var(--mu)}
+.grip{flex:none;touch-action:none;cursor:grab;color:var(--mu);font-size:1.5rem;padding:8px 6px;line-height:1}
+.ghost{position:fixed;z-index:60;margin:0;pointer-events:none;box-shadow:0 12px 30px rgba(0,0,0,.35);opacity:.95}
+#md{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+#md[hidden]{display:none}
+.sheet{background:var(--card);color:var(--tx);width:100%;max-width:480px;border-radius:20px 20px 0 0;overflow:hidden;max-height:90%;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.hd{position:relative;padding:22px 18px 18px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);background:linear-gradient(145deg,var(--g),var(--g2))}
+.hd .big{font-size:3.4rem;font-weight:900;opacity:.9;line-height:1}
+.hd h2{margin:6px 0 2px;font-size:1.4rem}
+.hd p{margin:0;opacity:.95}
+.x{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.35);color:#fff;border:0;border-radius:50%;width:34px;height:34px;padding:0}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 16px 4px}
+.st div{background:var(--bg);border-radius:12px;padding:10px 6px;text-align:center}
+.st b{display:block;font-size:1.25rem}.st small{color:var(--mu)}
+.inf2{padding:6px 18px 4px}.inf2 p{margin:6px 0}.inf2 span{color:var(--mu)}
+.note{color:var(--mu);font-size:.78rem;padding:4px 18px 16px}
+textarea{width:100%;height:220px;margin-top:12px;font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px}
+.tabs{display:flex;gap:6px;margin:0 0 12px}.tabs button.on{background:var(--ac);border-color:var(--ac);color:#111;font-weight:700}
+#who{margin:0 0 10px;color:var(--mu);font-size:.92rem}#who b{color:var(--tx)}#who a{color:var(--ac);cursor:pointer;margin-left:6px}
+.ov{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}.ov[hidden]{display:none}
+.ov div{width:100%;max-width:380px;text-align:center}.ov h2{margin:0 0 6px}.ov input{width:100%;font:inherit;font-size:1.1rem;padding:12px;margin:12px 0;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);text-align:center}
+#ct,#imp{height:90px}#cbox{margin:0 0 10px}#cbox button{margin-top:6px}
+.fl{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.fl button.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+.sc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.sc div{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 6px;text-align:center}.sc b{display:block;font-size:1.3rem}.sc small{color:var(--mu)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:center}th:first-child,td:first-child{text-align:left}
+td.ok{color:#2e9e5b;font-weight:700}td.bad{color:#d64545;font-weight:700}
+</style></head>
+<body><main>
+<h1>Mon Ballon d’Or <span>2026</span></h1>
+<p class="sub">Choisis ton pseudo, puis les 30 nommés sont en haut. Touche un joueur puis la place voulue (ou glisse-le à la souris). Touche une carte classée pour ses stats.</p>
+<div id="who"></div>
+<div class="tabs"><button class="on" data-t="mine">Mon classement</button><button data-t="cmp">Comparer</button></div>
+<div id="tab-mine">
+<div class="bar"><button class="p" id="code">Code (autre appareil)</button><button id="copy">Copier en texte</button><button id="reset">Tout remettre en haut</button></div>
+<div id="cbox" hidden><p class="sub">Pour un pote sur un autre appareil : il colle ce code dans « Comparer ».</p><textarea id="ct" readonly></textarea><button id="cc">Copier le code</button></div>
+<p id="msg"></p>
+<section id="pool"><div class="ph2"><div id="cnt"></div><span id="hint"></span></div><div id="chips"></div></section>
+<ol id="list"></ol>
+<div id="out"></div>
+</div>
+<div id="tab-cmp" hidden>
+<p class="sub">Compare ton classement avec les autres pseudos créés sur cet appareil.</p>
+<div class="fl" id="fl"></div><div id="res"></div>
+<details style="margin-top:16px"><summary>Ton pote est sur un autre appareil ?</summary><p class="sub">Il clique sur « Code (autre appareil) » dans son onglet « Mon classement » et t’envoie le code.</p>
+<textarea id="imp" placeholder="Colle le code de ton pote ici"></textarea>
+<div class="bar" style="margin-top:6px"><button class="p" id="add">Ajouter</button></div><p id="cmsg" style="color:var(--ac);min-height:1.2em"></p></details>
+</div>
+</main>
+<div class="ov" id="ps" hidden><div><h2>🏆 Bienvenue</h2><p class="sub">Qui joue ? Choisis ton pseudo ou crée-en un.</p><div id="pl" class="fl" style="justify-content:center"></div><input id="pi" maxlength="20" placeholder="Ton pseudo" autocomplete="off"><button class="p" id="pok">C’est parti</button> <button id="pno" hidden>Annuler</button></div></div>
+<div id="md" hidden><div class="sheet" id="sh"></div></div>
+<script>
+const FR="🇫🇷",ES="🇪🇸",PT="🇵🇹",EN="🏴󠁧󠁢󠁥󠁮󠁧󠁿",BR="🇧🇷",AR="🇦🇷";
+const PSG="Ligue des champions et Ligue 1 avec le PSG";
+// nom, drapeau, nation, club, poste, naissance, buts, passes déc., palmarès/infos (n.c. = non communiqué)
+const P=[
+["Jude Bellingham",EN,"Angleterre","Real Madrid","Milieu","2003-06-29","15","6","7 buts au Mondial (record anglais)"],
+["Pau Cubarsí",ES,"Espagne","FC Barcelone","Défenseur","2007-01-22",null,"2","Champion du monde, Liga"],
+["Marc Cucurella",ES,"Espagne","Chelsea","Défenseur","1998-07-22","2",null,"Champion du monde avec l’Espagne"],
+["Ousmane Dembélé",FR,"France","Paris Saint-Germain","Ailier","1997-05-15","26","14","Ligue des champions, Ligue 1, Supercoupe UEFA, Coupe intercontinentale"],
+["Luis Díaz","🇨🇴","Colombie","Bayern Munich","Ailier","1997-01-13","30","23–27","Bundesliga, Coupe d’Allemagne"],
+["Bruno Fernandes",PT,"Portugal","Manchester United","Milieu","1994-09-08","13","25–26",null],
+["Gabriel",BR,"Brésil","Arsenal","Défenseur","1997-12-19","4",null,null],
+["Erling Haaland","🇳🇴","Norvège","Manchester City","Attaquant","2000-07-21","58","11","Meilleur buteur de Premier League (27 buts), 7 buts au Mondial"],
+["Achraf Hakimi","🇲🇦","Maroc","Paris Saint-Germain","Latéral","1998-11-04","4","17–18","Ligue des champions, Ligue 1, champion d’Afrique"],
+["Harry Kane",EN,"Angleterre","Bayern Munich","Attaquant","1993-07-28","73","8","Bundesliga, Coupe et Supercoupe d’Allemagne"],
+["Khvicha Kvaratskhelia","🇬🇪","Géorgie","Paris Saint-Germain","Ailier","2001-02-12","23–24","10–11","Ligue des champions (joueur du tournoi UEFA), Ligue 1"],
+["Lamine Yamal",ES,"Espagne","FC Barcelone","Ailier","2007-07-13","26","21","Coupe du monde, Liga, Supercoupe d’Espagne"],
+["Sadio Mané","🇸🇳","Sénégal","Al-Nassr","Ailier","1992-04-10","24",null,null],
+["Marquinhos",BR,"Brésil","Paris Saint-Germain","Défenseur","1994-05-14","2","0",PSG],
+["Lautaro Martínez",AR,"Argentine","Inter Milan","Attaquant","1997-08-22","30","10","Champion d’Italie"],
+["Kylian Mbappé",FR,"France","Real Madrid","Attaquant","1998-12-20","58","13–14","Aucun trophée collectif ; 10 buts au Mondial, record all-time"],
+["Nuno Mendes",PT,"Portugal","Paris Saint-Germain","Latéral","2002-06-19","7",null,PSG],
+["Lionel Messi",AR,"Argentine","Inter Miami","Ailier","1987-06-24","44–45","30","MLS Cup, finaliste du Mondial"],
+["João Neves",PT,"Portugal","Paris Saint-Germain","Milieu","2004-09-27","11","4",PSG],
+["Michael Olise",FR,"France","Bayern Munich","Ailier","2001-12-12","26–27","35–41","Triplé national avec le Bayern"],
+["Willian Pacho","🇪🇨","Équateur","Paris Saint-Germain","Défenseur","2001-10-16","2","1",PSG],
+["Julián Quiñones","🇲🇽","Mexique","Al-Qadsiah","Ailier","1997-03-24","41","4",null],
+["Declan Rice",EN,"Angleterre","Arsenal","Milieu","1999-01-14","8","14–15",null],
+["Rodri",ES,"Espagne","Manchester City","Milieu","1996-06-22","2","0","Champion du monde avec l’Espagne"],
+["Fabián Ruiz",ES,"Espagne","Paris Saint-Germain","Milieu","1996-04-03","3",null,"Champion du monde ; "+PSG],
+["William Saliba",FR,"France","Arsenal","Défenseur","2001-03-24",null,"1",null],
+["Ferran Torres",ES,"Espagne","FC Barcelone","Ailier","2000-02-29","25","7","Champion du monde avec l’Espagne"],
+["Dayot Upamecano",FR,"France","Bayern Munich","Défenseur","1998-10-27","2","4","Triplé national avec le Bayern"],
+["Vinícius Júnior",BR,"Brésil","Real Madrid","Ailier","2000-07-12","28","16",null],
+["Vitinha",PT,"Portugal","Paris Saint-Germain","Milieu","2000-02-13","7","10",PSG]];
+const C={"Real Madrid":["#3b4a8a","#c9a84c"],"FC Barcelone":["#a50044","#004d98"],"Paris Saint-Germain":["#004170","#da291c"],"Bayern Munich":["#dc052d","#7d0219"],"Arsenal":["#ef0107","#6e0004"],"Manchester City":["#6cabdd","#1c2c5b"],"Manchester United":["#da291c","#4a0e0a"],"Chelsea":["#034694","#021f4a"],"Inter Milan":["#0068a8","#101820"],"Inter Miami":["#e87aa5","#1a1a1a"],"Al-Nassr":["#e8b800","#1b2a6b"],"Al-Qadsiah":["#e89600","#0b3b8c"]};
+const $=s=>document.querySelector(s),L=$("#list"),K="bdo26b";
+let slots=Array(30).fill(null),sel=null;
+try{const x=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(x)&&x.length===30&&x.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30))&&new Set(x.filter(v=>v!==null)).size===x.filter(v=>v!==null).length)slots=x}catch(e){}
+const save=()=>{if(me){profs[key(me)]={p:me,r:slots.slice()};saveP()}};
+const ini=n=>{const w=n.split(" ");return(w.length>1?w[0][0]+w[w.length-1][0]:n.slice(0,2)).toUpperCase()};
+const age=b=>{const d=new Date(b),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))a--;return a};
+const col=c=>{const [a,b]=C[c]||["#555","#222"];return `--g:${a};--g2:${b}`};
+function render(){
+ const pool=P.map((_,i)=>i).filter(i=>!slots.includes(i));
+ $("#cnt").textContent=pool.length?`Joueurs restants : ${pool.length}`:"Classement complet 🎉";
+ $("#hint").textContent=sel!==null?`${P[sel][0]} sélectionné : touche sa place`:"Touche un joueur, puis une place";
+ $("#chips").innerHTML=pool.map(id=>{const p=P[id];return `<div class="chip ${sel===id?"sel":""}" data-id="${id}" style="${col(p[3])}"><span class="face sm">${ini(p[0])}<i>${p[1]}</i></span><b>${p[0]}</b><button class="inf" aria-label="Stats">ⓘ</button></div>`}).join("");
+ L.innerHTML=slots.map((id,s)=>{const rc=s<3?" r"+(s+1):"";
+  if(id===null)return `<li class="slot${rc}" data-s="${s}"><span class="n">${s+1}</span><span class="e">Place libre</span></li>`;
+  const p=P[id];return `<li class="slot f${rc}" data-s="${s}" data-id="${id}" style="${col(p[3])}"><span class="n">${s+1}</span><span class="face">${ini(p[0])}<i>${p[1]}</i></span><span class="nm"><b>${p[0]}</b><small>${p[3]} · ${p[4]}</small></span><button class="rm" aria-label="Retirer">✕</button><span class="grip">⠿</span></li>`}).join("")}
+function put(id,s,from){if(from>=0)[slots[from],slots[s]]=[slots[s],slots[from]];else slots[s]=id;sel=null;save();render()}
+let D=null,sup=false,lastY=0,raf=0;
+document.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;
+ const el=e.target.closest(".chip,.slot.f");if(!el)return;const chip=el.classList.contains("chip");
+ if(e.pointerType!=="mouse"&&(chip||!e.target.closest(".grip")))return;
+ D={el,id:+el.dataset.id,from:chip?-1:+el.dataset.s,x:e.clientX,y:e.clientY,on:false}});
+function hov(e){const t=document.elementFromPoint(e.clientX,e.clientY),s=t&&t.closest(".slot"),p=t&&t.closest("#pool");
+ document.querySelectorAll(".hov").forEach(x=>x.classList.remove("hov"));
+ if(s)s.classList.add("hov");else if(p&&D.from>=0)p.classList.add("hov");return {s:s?+s.dataset.s:-1,p:!!p}}
+window.addEventListener("pointermove",e=>{if(!D)return;lastY=e.clientY;
+ if(!D.on){if(Math.hypot(e.clientX-D.x,e.clientY-D.y)<6)return;
+  const r=D.el.getBoundingClientRect();D.dx=e.clientX-r.left;D.dy=e.clientY-r.top;D.on=true;
+  D.g=D.el.cloneNode(true);D.g.classList.add("ghost");D.g.style.width=r.width+"px";document.body.appendChild(D.g);tick()}
+ D.g.style.left=(e.clientX-D.dx)+"px";D.g.style.top=(e.clientY-D.dy)+"px";hov(e)});
+function tick(){if(!D||!D.on)return;if(lastY<90)scrollBy(0,-12);else if(lastY>innerHeight-70)scrollBy(0,12);raf=requestAnimationFrame(tick)}
+function end(e){if(!D)return;cancelAnimationFrame(raf);
+ if(D.on){const h=hov(e);D.g.remove();document.querySelectorAll(".hov").forEach(x=>x.classList.remove("hov"));
+  sup=true;setTimeout(()=>sup=false,80);
+  if(h.s>=0)put(D.id,h.s,D.from);else if(h.p&&D.from>=0){slots[D.from]=null;sel=null;save();render()}}
+ D=null}
+window.addEventListener("pointerup",end);window.addEventListener("pointercancel",end);
+document.addEventListener("click",e=>{if(sup)return;const t=e.target;
+ if(t.closest("#md")){if(t.id==="md"||t.closest(".x"))close();return}
+ const chip=t.closest(".chip"),slot=t.closest(".slot");
+ if(t.closest(".inf")){open(+chip.dataset.id);return}
+ if(t.closest(".rm")){slots[+slot.dataset.s]=null;save();render();return}
+ if(chip){sel=sel===+chip.dataset.id?null:+chip.dataset.id;render();return}
+ if(slot){const s=+slot.dataset.s;if(sel!==null)put(sel,s,-1);else if(slots[s]!==null)open(slots[s])}});
+function open(id){const p=P[id],r=slots.indexOf(id)+1,v=x=>x==null?"n.c.":x;
+ $("#sh").style.cssText=col(p[3]);
+ $("#sh").innerHTML=`<div class="hd"><button class="x" aria-label="Fermer">✕</button><div class="big">${ini(p[0])}</div><h2>${p[1]} ${p[0]}</h2><p>${p[3]} · ${p[4]}</p></div>
+ <div class="st"><div><b>${v(p[6])}</b><small>Buts</small></div><div><b>${v(p[7])}</b><small>Passes déc.</small></div><div><b>${r?"#"+r:"—"}</b><small>Ton rang</small></div></div>
+ <div class="inf2"><p><span>Nation :</span> ${p[1]} ${p[2]}</p><p><span>Âge :</span> ${age(p[5])} ans</p>${p[8]?`<p><span>Saison 2025-26 :</span> ${p[8]}</p>`:""}</div>
+ <p class="note">Buts et passes : saison 2025-26 toutes compétitions (club + sélection), chiffres approximatifs selon les sources (GOAL, AS). n.c. = non communiqué.</p>`;
+ $("#md").hidden=false}
+const close=()=>$("#md").hidden=true;
+addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+const txt=()=>"Mon Ballon d’Or 2026\n"+slots.map((id,i)=>id===null?null:`${i+1}. ${P[id][0]} (${P[id][3]})`).filter(Boolean).join("\n");
+$("#copy").onclick=async()=>{const t=txt();
+ try{await navigator.clipboard.writeText(t);$("#msg").textContent="Classement copié !";$("#out").innerHTML=""}
+ catch(e){$("#msg").textContent="Copie manuelle : sélectionne le texte ci-dessous.";$("#out").innerHTML="<textarea readonly></textarea>";const a=$("#out textarea");a.value=t;a.focus();a.select()}};
+$("#reset").onclick=()=>{slots=Array(30).fill(null);sel=null;save();render();$("#msg").textContent="";$("#out").innerHTML=""};
+
+const PK="bdo26p",FK="bdo26u";
+let me="",profs={},cur="";
+function key(t){return String(t).trim().toLowerCase()}
+try{me=localStorage.getItem(PK)||"";const f=JSON.parse(localStorage.getItem(FK)||"{}");
+ if(f&&typeof f==="object")for(const k in f){const x=f[k];if(x&&typeof x.p==="string"&&check(x.r))profs[k]={p:x.p,r:x.r}}}catch(e){}
+if(me){if(profs[key(me)])slots=profs[key(me)].r.slice();else{profs[key(me)]={p:me,r:slots.slice()}}}
+function check(r){if(!Array.isArray(r)||r.length!==30||!r.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30)))return false;const f=r.filter(v=>v!==null);return new Set(f).size===f.length}
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const saveP=()=>{try{localStorage.setItem(FK,JSON.stringify(profs))}catch(e){}};
+function who(){$("#who").innerHTML=me?`👤 <b>${esc(me)}</b><a id="chg">changer de joueur</a>`:""}
+function askName(first){$("#pl").innerHTML=Object.values(profs).map(x=>`<button data-u="${esc(x.p)}">${esc(x.p)}</button>`).join("");$("#pi").value="";$("#pno").hidden=first;$("#ps").hidden=false;$("#pi").focus()}
+function choose(v){v=v.trim().slice(0,20);if(!v)return;const k=key(v);
+ if(profs[k])slots=profs[k].r.slice();else if(Object.keys(profs).length)slots=Array(30).fill(null);
+ me=profs[k]?profs[k].p:v;profs[k]={p:me,r:slots.slice()};saveP();try{localStorage.setItem(PK,me)}catch(e){}
+ sel=null;$("#cbox").hidden=true;$("#ps").hidden=true;who();render();showF()}
+$("#pok").onclick=()=>choose($("#pi").value);
+$("#pl").addEventListener("click",e=>{const b=e.target.closest("button");if(b)choose(b.dataset.u)});
+$("#pi").addEventListener("keydown",e=>{if(e.key==="Enter")$("#pok").click()});
+$("#pno").onclick=()=>$("#ps").hidden=true;
+$("#who").addEventListener("click",e=>{if(e.target.id==="chg")askName(false)});
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+ $("#tab-mine").hidden=b.dataset.t!=="mine";$("#tab-cmp").hidden=b.dataset.t!=="cmp";if(b.dataset.t==="cmp")showF()});
+const enc=()=>"BDO26:"+btoa(unescape(encodeURIComponent(JSON.stringify([me,slots]))));
+function dec(t){try{t=t.replace(/\s/g,"").replace(/^BDO26:/,"");const [p,r]=JSON.parse(decodeURIComponent(escape(atob(t))));
+ if(typeof p!=="string"||!p.trim()||p.length>24||!check(r))return null;return{p:p.trim(),r}}catch(e){return null}}
+$("#code").onclick=()=>{$("#ct").value=enc();$("#cbox").hidden=false;$("#ct").select()};
+$("#cc").onclick=async()=>{try{await navigator.clipboard.writeText($("#ct").value);$("#msg").textContent="Code copié !"}catch(e){$("#ct").select();$("#msg").textContent="Sélectionné : copie-le à la main."}};
+$("#add").onclick=()=>{const d=dec($("#imp").value);if(!d){$("#cmsg").textContent="Code invalide, vérifie que tu l’as collé en entier.";return}
+ profs[key(d.p)]={p:d.p,r:d.r};saveP();cur=key(d.p);$("#imp").value="";$("#cmsg").textContent=`Classement de ${d.p} ajouté.`;showF()};
+const others=()=>Object.values(profs).filter(x=>key(x.p)!==key(me));
+function showF(){const o=others();if(cur&&!o.some(x=>key(x.p)===cur))cur="";
+ $("#fl").innerHTML=o.map(f=>`<button class="${key(f.p)===cur?"on":""}" data-f="${esc(key(f.p))}">${esc(f.p)}</button>`).join("");
+ $("#res").innerHTML=cur?table(profs[cur]):(o.length?"<p class='sub'>Choisis un pote ci-dessus.</p>":"<p class='sub'>Aucun autre pseudo sur cet appareil. Ton pote clique sur « changer de joueur » en haut, crée son pseudo et fait son classement. Ensuite repasse sur ton pseudo pour comparer.</p>")}
+$("#fl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;cur=b.dataset.f;showF()});
+function table(f){const a=slots,b=f.r,com=[];
+ for(let id=0;id<30;id++){const i=a.indexOf(id),j=b.indexOf(id);if(i>=0&&j>=0)com.push({id,i,j})}
+ const n=com.length;let top="";
+ if(n<3)top=`<p class="sub">Il faut au moins 3 joueurs placés par vous deux pour comparer (${n} en commun).</p>`;
+ else{const A=[...com].sort((x,y)=>x.i-y.i).map(x=>x.id),B=[...com].sort((x,y)=>x.j-y.j).map(x=>x.id);
+  const d2=A.reduce((t,id,k)=>t+(k-B.indexOf(id))**2,0),pct=Math.round((1-6*d2/(n*(n*n-1))+1)*50);
+  const same=com.filter(x=>x.i===x.j).length,mx=com.reduce((m,x)=>Math.abs(x.i-x.j)>Math.abs(m.i-m.j)?x:m,com[0]);
+  top=`<div class="sc"><div><b>${pct} %</b><small>Accord</small></div><div><b>${same}</b><small>Même place</small></div><div><b>${esc(P[mx.id][0].split(" ").pop())}</b><small>Plus gros écart (#${mx.i+1} / #${mx.j+1})</small></div></div>`}
+ const ids=[...a.filter(v=>v!==null),...P.map((_,i)=>i).filter(i=>!a.includes(i))];
+ const rows=ids.map(id=>{const i=a.indexOf(id),j=b.indexOf(id),g=i>=0&&j>=0?Math.abs(i-j):null;
+  return `<tr><td>${P[id][1]} ${esc(P[id][0])}</td><td>${i>=0?i+1:"–"}</td><td>${j>=0?j+1:"–"}</td><td class="${g===0?"ok":g>=10?"bad":""}">${g===null?"–":g===0?"=":g}</td></tr>`}).join("");
+ return top+`<div class="tw"><table><tr><th>Joueur</th><th>${esc(me)}</th><th>${esc(f.p)}</th><th>Écart</th></tr>${rows}</table></div>`}
+who();showF();if(!me)askName(true);
+render();
+</script></body></html>
