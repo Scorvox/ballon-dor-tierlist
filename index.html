@@ -70,7 +70,7 @@ td.ok{color:#2e9e5b;font-weight:700}td.bad{color:#d64545;font-weight:700}
 <body><main>
 <h1>Mon Ballon d’Or <span>2026</span></h1>
 <p class="sub">Choisis ton pseudo, puis les 30 nommés sont en haut. Touche un joueur puis la place voulue (ou glisse-le à la souris). Touche une carte classée pour ses stats.</p>
-<div id="who"></div>
+<div id="who"></div><p class="sub sync" style="margin:-6px 0 8px;font-size:.8rem"></p>
 <div class="tabs"><button class="on" data-t="mine">Mon classement</button><button data-t="cmp">Comparer</button></div>
 <div id="tab-mine">
 <div class="bar"><button class="p" id="code">Code (autre appareil)</button><button id="copy">Copier en texte</button><button id="reset">Tout remettre en haut</button></div>
@@ -82,13 +82,13 @@ td.ok{color:#2e9e5b;font-weight:700}td.bad{color:#d64545;font-weight:700}
 </div>
 <div id="tab-cmp" hidden>
 <p class="sub">Compare ton classement avec les autres pseudos créés sur cet appareil.</p>
-<div class="fl" id="fl"></div><div id="res"></div>
+<div class="bar"><button id="rf">↻ Actualiser</button></div><div class="fl" id="fl"></div><div id="res"></div>
 <details style="margin-top:16px"><summary>Ton pote est sur un autre appareil ?</summary><p class="sub">Il clique sur « Code (autre appareil) » dans son onglet « Mon classement » et t’envoie le code.</p>
 <textarea id="imp" placeholder="Colle le code de ton pote ici"></textarea>
 <div class="bar" style="margin-top:6px"><button class="p" id="add">Ajouter</button></div><p id="cmsg" style="color:var(--ac);min-height:1.2em"></p></details>
 </div>
 </main>
-<div class="ov" id="ps" hidden><div><h2>🏆 Ballon d’Or 2026</h2><p class="sub">Touche ton pseudo pour retrouver ton classement, ou crée-en un nouveau.</p><div id="pl" class="fl" style="justify-content:center"></div><input id="pi" maxlength="20" placeholder="Nouveau pseudo" autocomplete="off"><button class="p" id="pok">Créer ce pseudo</button> <button id="pno" hidden>Annuler</button></div></div>
+<div class="ov" id="ps" hidden><div><h2>🏆 Ballon d’Or 2026</h2><p class="sub">Touche ton pseudo pour retrouver ton classement, ou crée-en un nouveau.</p><div id="pl" class="fl" style="justify-content:center"></div><p class="sub sync" style="font-size:.8rem"></p><input id="pi" maxlength="20" placeholder="Nouveau pseudo" autocomplete="off"><button class="p" id="pok">Créer ce pseudo</button> <button id="pno" hidden>Annuler</button></div></div>
 <div id="md" hidden><div class="sheet" id="sh"></div></div>
 <script>
 const FR="🇫🇷",ES="🇪🇸",PT="🇵🇹",EN="🏴󠁧󠁢󠁥󠁮󠁧󠁿",BR="🇧🇷",AR="🇦🇷";
@@ -129,7 +129,7 @@ const C={"Real Madrid":["#3b4a8a","#c9a84c"],"FC Barcelone":["#a50044","#004d98"
 const $=s=>document.querySelector(s),L=$("#list"),K="bdo26b";
 let slots=Array(30).fill(null),sel=null;
 try{const x=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(x)&&x.length===30&&x.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30))&&new Set(x.filter(v=>v!==null)).size===x.filter(v=>v!==null).length)slots=x}catch(e){}
-const save=()=>{if(me){profs[key(me)]={p:me,r:slots.slice()};saveP()}};
+const save=()=>{if(me){profs[key(me)]={p:me,r:slots.slice(),t:Date.now()};saveP();push()}};
 const ini=n=>{const w=n.split(" ");return(w.length>1?w[0][0]+w[w.length-1][0]:n.slice(0,2)).toUpperCase()};
 const age=b=>{const d=new Date(b),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))a--;return a};
 const col=c=>{const [a,b]=C[c]||["#555","#222"];return `--g:${a};--g2:${b}`};
@@ -188,16 +188,17 @@ const PK="bdo26p",FK="bdo26u";
 let me="",profs={},cur="";
 function key(t){return String(t).trim().toLowerCase()}
 try{me=localStorage.getItem(PK)||"";const f=JSON.parse(localStorage.getItem(FK)||"{}");
- if(f&&typeof f==="object")for(const k in f){const x=f[k];if(x&&typeof x.p==="string"&&check(x.r))profs[k]={p:x.p,r:x.r}}}catch(e){}
+ if(f&&typeof f==="object")for(const k in f){const x=f[k];if(x&&typeof x.p==="string"&&check(x.r))profs[k]={p:x.p,r:x.r,t:+x.t||0}}}catch(e){}
 if(me){if(profs[key(me)])slots=profs[key(me)].r.slice();else{profs[key(me)]={p:me,r:slots.slice()}}}
 function check(r){if(!Array.isArray(r)||r.length!==30||!r.every(v=>v===null||(Number.isInteger(v)&&v>=0&&v<30)))return false;const f=r.filter(v=>v!==null);return new Set(f).size===f.length}
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const saveP=()=>{try{localStorage.setItem(FK,JSON.stringify(profs))}catch(e){}};
 function who(){$("#who").innerHTML=me?`👤 <b>${esc(me)}</b><a id="chg">changer de joueur</a>`:""}
-function askName(first){$("#pl").innerHTML=Object.values(profs).map(x=>`<button data-u="${esc(x.p)}">${esc(x.p)}</button>`).join("");$("#pi").value="";$("#pno").hidden=first;$("#ps").hidden=false;$("#pi").focus()}
+function plist(){$("#pl").innerHTML=Object.values(profs).map(x=>`<button data-u="${esc(x.p)}">${esc(x.p)}</button>`).join("")}
+function askName(first){plist();$("#pi").value="";$("#pno").hidden=first;$("#ps").hidden=false;$("#pi").focus()}
 function choose(v){v=v.trim().slice(0,20);if(!v)return;const k=key(v);
  if(profs[k])slots=profs[k].r.slice();else if(Object.keys(profs).length)slots=Array(30).fill(null);
- me=profs[k]?profs[k].p:v;profs[k]={p:me,r:slots.slice()};saveP();try{localStorage.setItem(PK,me)}catch(e){}
+ const isNew=!profs[k];me=profs[k]?profs[k].p:v;profs[k]={p:me,r:slots.slice(),t:isNew?Date.now():profs[k].t};saveP();if(isNew)push();try{localStorage.setItem(PK,me)}catch(e){}
  sel=null;$("#cbox").hidden=true;$("#ps").hidden=true;who();render();showF()}
 $("#pok").onclick=()=>choose($("#pi").value);
 $("#pl").addEventListener("click",e=>{const b=e.target.closest("button");if(b)choose(b.dataset.u)});
@@ -205,14 +206,14 @@ $("#pi").addEventListener("keydown",e=>{if(e.key==="Enter")$("#pok").click()});
 $("#pno").onclick=()=>$("#ps").hidden=true;
 $("#who").addEventListener("click",e=>{if(e.target.id==="chg")askName(false)});
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
- $("#tab-mine").hidden=b.dataset.t!=="mine";$("#tab-cmp").hidden=b.dataset.t!=="cmp";if(b.dataset.t==="cmp")showF()});
+ $("#tab-mine").hidden=b.dataset.t!=="mine";$("#tab-cmp").hidden=b.dataset.t!=="cmp";if(b.dataset.t==="cmp"){pull();showF()}});
 const enc=()=>"BDO26:"+btoa(unescape(encodeURIComponent(JSON.stringify([me,slots]))));
 function dec(t){try{t=t.replace(/\s/g,"").replace(/^BDO26:/,"");const [p,r]=JSON.parse(decodeURIComponent(escape(atob(t))));
  if(typeof p!=="string"||!p.trim()||p.length>24||!check(r))return null;return{p:p.trim(),r}}catch(e){return null}}
 $("#code").onclick=()=>{$("#ct").value=enc();$("#cbox").hidden=false;$("#ct").select()};
 $("#cc").onclick=async()=>{try{await navigator.clipboard.writeText($("#ct").value);$("#msg").textContent="Code copié !"}catch(e){$("#ct").select();$("#msg").textContent="Sélectionné : copie-le à la main."}};
 $("#add").onclick=()=>{const d=dec($("#imp").value);if(!d){$("#cmsg").textContent="Code invalide, vérifie que tu l’as collé en entier.";return}
- profs[key(d.p)]={p:d.p,r:d.r};saveP();cur=key(d.p);$("#imp").value="";$("#cmsg").textContent=`Classement de ${d.p} ajouté.`;showF()};
+ profs[key(d.p)]={p:d.p,r:d.r,t:Date.now()};saveP();cur=key(d.p);$("#imp").value="";$("#cmsg").textContent=`Classement de ${d.p} ajouté.`;showF()};
 const others=()=>Object.values(profs).filter(x=>key(x.p)!==key(me));
 function showF(){const o=others();if(cur&&!o.some(x=>key(x.p)===cur))cur="";
  $("#fl").innerHTML=o.map(f=>`<button class="${key(f.p)===cur?"on":""}" data-f="${esc(key(f.p))}">${esc(f.p)}</button>`).join("");
@@ -231,5 +232,26 @@ function table(f){const a=slots,b=f.r,com=[];
   return `<tr><td>${P[id][1]} ${esc(P[id][0])}</td><td>${i>=0?i+1:"–"}</td><td>${j>=0?j+1:"–"}</td><td class="${g===0?"ok":g>=10?"bad":""}">${g===null?"–":g===0?"=":g}</td></tr>`}).join("");
  return top+`<div class="tw"><table><tr><th>Joueur</th><th>${esc(me)}</th><th>${esc(f.p)}</th><th>Écart</th></tr>${rows}</table></div>`}
 who();showF();if(!me)askName(true);
+
+// ---- synchronisation Firebase (REST) ----
+const DB="https://ballon-dor-tierlist-91bef-default-rtdb.europe-west1.firebasedatabase.app";
+const hexk=t=>[...new TextEncoder().encode(key(t))].map(b=>b.toString(16).padStart(2,"0")).join("");
+const rs=r=>r.map(v=>v===null?"":v).join(",");
+const rp=t=>{const r=String(t).split(",").map(v=>v===""?null:+v);return r.length===30&&check(r)?r:null};
+const setSt=t=>document.querySelectorAll(".sync").forEach(e=>e.textContent=t);
+let pt=0;
+function push(){if(!me)return;clearTimeout(pt);pt=setTimeout(async()=>{const q=profs[key(me)];if(!q)return;
+ try{const r=await fetch(DB+"/rankings/"+hexk(me)+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({p:q.p,r:rs(q.r),t:q.t||0})});
+  if(!r.ok)throw 0;setSt("☁️ synchronisé")}catch(e){setSt("hors ligne (données locales)")}},500)}
+async function pull(){try{const res=await fetch(DB+"/rankings.json");if(!res.ok)throw 0;const d=(await res.json())||{};let ch=false;
+ for(const fk in d){const x=d[fk];if(!x||typeof x.p!=="string"||typeof x.r!=="string")continue;const r=rp(x.r);if(!r)continue;
+  const k=key(x.p),t=+x.t||0,l=profs[k];
+  if(!l||t>(l.t||0)){profs[k]={p:x.p.slice(0,20),r,t};ch=true;if(me&&k===key(me))slots=r.slice()}}
+ if(ch)saveP();
+ if(me&&profs[key(me)]){const rm=d[hexk(me)];if(!rm||(profs[key(me)].t||0)>(+rm.t||0))push()}
+ setSt("☁️ synchronisé");render();showF();if(!$("#ps").hidden)plist()}catch(e){setSt("hors ligne (données locales)")}}
+$("#rf").onclick=pull;
+setInterval(()=>{if(!$("#tab-cmp").hidden)pull()},30000);
+pull();
 render();
 </script></body></html>
